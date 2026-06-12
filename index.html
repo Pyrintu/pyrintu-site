@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pyrintu — Intelligent solutions. Real impact.</title>
+  <meta name="description" content="Pyrintu builds intelligent, composable AI tools and agents to automate specialist workflows for teams." />
+  <meta name="theme-color" content="#0b0b0d" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Tailwind CDN (small, fine for static sites) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small visual polish */
+    :root {
+      --purple-1: #7A3CFF;
+      --purple-2: #5C2BEE;
+      --bg: #0b0b0d;
+      --muted: #9aa3b2;
+    }
+    body { background: linear-gradient(180deg, #070708 0%, #0b0b0d 100%); color: #fff; }
+    .brand-gradient {
+      background: linear-gradient(90deg,var(--purple-1),var(--purple-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .glass { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+  </style>
+</head>
+<body class="antialiased font-inter">
+  <header class="max-w-7xl mx-auto p-6 flex items-center justify-between">
+    <a class="flex items-center gap-4" href="/">
+      <!-- Replace assets/logo-horizontal.png with your horizontal logo -->
+      <img src="assets/logo-horizontal.png" alt="Pyrintu logo" width="160" height="48" class="block"/>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6 text-sm text-slate-200">
+      <a href="#product" class="hover:underline">Product</a>
+      <a href="#pricing" class="hover:underline">Pricing</a>
+      <a href="#about" class="hover:underline">About</a>
+      <a href="#contact" class="text-white px-4 py-2 rounded-md glass hover:opacity-90">Get early access</a>
+    </nav>
+
+    <button id="menuBtn" class="md:hidden text-slate-200">menu</button>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6">
+    <section class="grid md:grid-cols-2 gap-12 items-center py-12">
+      <div>
+        <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">
+          Build intelligent workflows that actually deliver impact.
+        </h1>
+        <p class="mt-6 text-lg text-slate-300 max-w-xl">
+          Pyrintu helps teams create, test, and run domain-specific AI agents and automations — fast, secure, and composable.
+        </p>
+
+        <div class="mt-8 flex gap-4">
+          <a id="ctaPrimary" class="inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-semibold"
+             href="#contact" style="background:linear-gradient(90deg,var(--purple-1),var(--purple-2));">
+            Get early access
+          </a>
+          <a href="#product" class="inline-flex items-center gap-2 px-5 py-3 rounded-full glass text-sm">See product</a>
+        </div>
+
+        <div class="mt-8 flex items-center gap-6 text-slate-400 text-sm">
+          <div>
+            <div class="text-2xl font-bold">Alpha</div>
+            <div>Invite-only — be first to try</div>
+          </div>
+          <div class="h-12 border-l border-slate-800"></div>
+          <div>
+            <div class="text-2xl font-bold">Student-friendly</div>
+            <div>Free to run demo with no paid services</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="glass rounded-2xl p-6">
+          <div class="flex items-center gap-4">
+            <img src="assets/logo-square.png" alt="Pyrintu mark" width="56" height="56" class="rounded-md"/>
+            <div>
+              <div class="text-sm text-slate-300">Demo agent</div>
+              <div class="text-lg font-semibold">Marketing email generator</div>
+            </div>
+          </div>
+
+          <form id="demoForm" class="mt-4 space-y-4">
+            <label class="block">
+              <div class="text-xs text-slate-300 mb-1">Product name</div>
+              <input id="productName" class="w-full rounded-md p-3 bg-transparent border border-slate-800" placeholder="e.g., HyperApp" />
+            </label>
+
+            <label class="block">
+              <div class="text-xs text-slate-300 mb-1">Audience</div>
+              <input id="audience" class="w-full rounded-md p-3 bg-transparent border border-slate-800" placeholder="e.g., SaaS founders" />
+            </label>
+
+            <button type="submit" class="w-full mt-2 py-3 rounded-md" style="background:linear-gradient(90deg,var(--purple-1),var(--purple-2));">
+              Run demo (mock)
+            </button>
+
+            <div id="demoOut" class="mt-4 text-slate-200 hidden"></div>
+          </form>
+        </div>
+
+        <p class="mt-4 text-sm text-slate-400">
+          This demo runs a mock generator locally. Later we’ll plug in real LLMs (OpenAI or alternatives) behind a secure serverless function — one switch, no site changes required.
+        </p>
+      </div>
+    </section>
+
+    <section id="product" class="py-12 border-t border-slate-800">
+      <h2 class="text-2xl font-semibold">What you get</h2>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article class="glass p-5 rounded-lg">
+          <h3 class="font-semibold">Agent Builder</h3>
+          <p class="mt-2 text-slate-300 text-sm">Create prompt templates, upload documents, and test runs.</p>
+        </article>
+        <article class="glass p-5 rounded-lg">
+          <h3 class="font-semibold">Run History</h3>
+          <p class="mt-2 text-slate-300 text-sm">Saved runs, logs, and reproducible inputs.</p>
+        </article>
+        <article class="glass p-5 rounded-lg">
+          <h3 class="font-semibold">API-first</h3>
+          <p class="mt-2 text-slate-300 text-sm">Call agents programmatically or from your product.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="pricing" class="py-12 border-t border-slate-800">
+      <h2 class="text-2xl font-semibold">Pricing (coming)</h2>
+      <p class="mt-3 text-slate-300">Alpha is free and student-friendly. Pricing will be announced at launch.</p>
+    </section>
+
+    <section id="about" class="py-12 border-t border-slate-800">
+      <h2 class="text-2xl font-semibold">About Pyrintu</h2>
+      <p class="mt-3 text-slate-300 max-w-2xl">
+        Pyrintu builds composable AI tooling that helps teams automate specialist tasks with reproducible, auditable agents. Founded by a student founder, focused on quick iteration and practical outcomes.
+      </p>
+    </section>
+
+    <section id="contact" class="py-12 border-t border-slate-800">
+      <h3 class="text-xl font-semibold">Join the waitlist</h3>
+      <p class="mt-2 text-slate-300">Enter your email to get early access and updates.</p>
+
+      <form id="emailForm" class="mt-4 sm:w-1/2">
+        <input id="emailInput" type="email" placeholder="you@example.com" required
+               class="w-full p-3 rounded-l-md bg-transparent border border-slate-800"/>
+        <div class="mt-3">
+          <button type="submit" class="px-4 py-3 rounded-md" style="background:linear-gradient(90deg,var(--purple-1),var(--purple-2));">
+            Save my spot
+          </button>
+          <span id="emailStatus" class="ml-4 text-slate-300"></span>
+        </div>
+      </form>
+
+      <p class="mt-6 text-sm text-slate-500">Or reach us at hello@pyrintu.software</p>
+    </section>
+  </main>
+
+  <footer class="max-w-7xl mx-auto p-6 text-sm text-slate-400 border-t border-slate-800 mt-12">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <img src="assets/logo-square.png" alt="Pyrintu" width="36" height="36" />
+        <div>Pyrintu • Intelligent solutions. Real impact.</div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="https://x.com/pyrintu" target="_blank" rel="noreferrer noopener">X</a>
+        <a href="https://www.linkedin.com/company/pyrintu/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+        <a href="https://instagram.com/pyrintuai" target="_blank" rel="noreferrer noopener">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Demo run — mock LLM response
+    document.getElementById('demoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const product = document.getElementById('productName').value || 'Your product';
+      const audience = document.getElementById('audience').value || 'your audience';
+      const out = document.getElementById('demoOut');
+      out.classList.remove('hidden');
+      out.textContent = 'Generating...';
+
+      // Mock deterministic output (safe, free)
+      await new Promise(r => setTimeout(r, 800));
+      out.innerHTML = `<pre style="white-space:pre-wrap">${product} — marketing email for ${audience}:\n\nHi there,\n\nWe built ${product} to help ${audience} ... (mock output)</pre>`;
+    });
+
+    // Email form: stores in localStorage for now. Later, wire to Supabase endpoint.
+    document.getElementById('emailForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const key = 'pyrintu_waitlist';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!list.includes(email)) {
+        list.push(email);
+        localStorage.setItem(key, JSON.stringify(list));
+      }
+      document.getElementById('emailStatus').textContent = 'Thanks — saved locally (replace with Supabase later)';
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
