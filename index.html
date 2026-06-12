@@ -30,8 +30,8 @@
 <body class="antialiased font-inter">
   <header class="max-w-7xl mx-auto p-6 flex items-center justify-between">
     <a class="flex items-center gap-4" href="/">
-      <!-- Replace assets/logo-horizontal.png with your horizontal logo -->
-      <img src="assets/logo-horizontal.png" alt="Pyrintu logo" width="160" height="48" class="block"/>
+      <!-- Use SVG logos in assets/ (logo-horizontal.svg) -->
+      <img src="assets/logo-horizontal.svg" alt="Pyrintu logo" width="160" height="48" class="block"/>
     </a>
 
     <nav class="hidden md:flex items-center gap-6 text-sm text-slate-200">
@@ -78,7 +78,7 @@
       <div>
         <div class="glass rounded-2xl p-6">
           <div class="flex items-center gap-4">
-            <img src="assets/logo-square.png" alt="Pyrintu mark" width="56" height="56" class="rounded-md"/>
+            <img src="assets/logo-square.svg" alt="Pyrintu mark" width="56" height="56" class="rounded-md"/>
             <div>
               <div class="text-sm text-slate-300">Demo agent</div>
               <div class="text-lg font-semibold">Marketing email generator</div>
@@ -162,7 +162,7 @@
   <footer class="max-w-7xl mx-auto p-6 text-sm text-slate-400 border-t border-slate-800 mt-12">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <img src="assets/logo-square.png" alt="Pyrintu" width="36" height="36" />
+        <img src="assets/logo-square.svg" alt="Pyrintu" width="36" height="36" />
         <div>Pyrintu • Intelligent solutions. Real impact.</div>
       </div>
 
@@ -174,7 +174,15 @@
     </div>
   </footer>
 
+  <!-- Supabase JS (UMD) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script>
+    // Supabase config (anon/public key) - provided by user
+    const SUPABASE_URL = 'https://gtzzqljpvbzociinqegh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0enpxbGpwdmJ6b2NpaW5xZWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MjgwNzEsImV4cCI6MjA5NDIwNDA3MX0.nGNpr1t7U7wOI9nsYxuHX9rytYP1EwM7CTFFLJTJYy8';
+
+    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Demo run — mock LLM response
     document.getElementById('demoForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -189,17 +197,27 @@
       out.innerHTML = `<pre style="white-space:pre-wrap">${product} — marketing email for ${audience}:\n\nHi there,\n\nWe built ${product} to help ${audience} ... (mock output)</pre>`;
     });
 
-    // Email form: stores in localStorage for now. Later, wire to Supabase endpoint.
-    document.getElementById('emailForm').addEventListener('submit', (e) => {
+    // Email form: save to Supabase waitlist table
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('emailInput').value;
-      const key = 'pyrintu_waitlist';
-      const list = JSON.parse(localStorage.getItem(key) || '[]');
-      if (!list.includes(email)) {
-        list.push(email);
-        localStorage.setItem(key, JSON.stringify(list));
+      document.getElementById('emailStatus').textContent = 'Saving...';
+      try {
+        const { data, error } = await supabase.from('waitlist').insert([{ email }]);
+        if (error) {
+          console.error('Supabase error', error);
+          document.getElementById('emailStatus').textContent = 'Error saving — saved locally as fallback';
+          // fallback to localStorage
+          const key = 'pyrintu_waitlist';
+          const list = JSON.parse(localStorage.getItem(key) || '[]');
+          if (!list.includes(email)) { list.push(email); localStorage.setItem(key, JSON.stringify(list)); }
+        } else {
+          document.getElementById('emailStatus').textContent = 'Thanks — you are on the waitlist!';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('emailStatus').textContent = 'Network error — saved locally';
       }
-      document.getElementById('emailStatus').textContent = 'Thanks — saved locally (replace with Supabase later)';
       e.target.reset();
     });
   </script>
