@@ -1,1 +1,1 @@
-2026-06-12T00:00:00Z - Created repository structure and initial static site scaffold. No logos added; please upload your PNGs to assets/.
+2026-06-12T07:35:00Z - Deployment requested by user. Triggering GitHub Actions deploy workflow to build site, inject SUPABASE_ANON_KEY secret, and publish to gh-pages. User requested mapping to pyrintu.software (CNAME present). Please monitor Actions tab for progress and any errors.
