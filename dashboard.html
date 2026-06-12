@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pyrintu Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-900 text-white p-6">
+  <header class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+      <img src="assets/logo-square.svg" width="48" height="48" alt="Pyrintu" />
+      <h1 class="text-2xl">Pyrintu Dashboard</h1>
+    </div>
+    <div id="authArea"></div>
+  </header>
+
+  <main>
+    <section id="authSection" class="mb-6">
+      <p class="text-sm text-gray-400">Sign in with your email (magic link) to view the waitlist.</p>
+      <input id="loginEmail" type="email" placeholder="you@example.com" class="p-2 rounded bg-gray-800 border border-gray-700 mt-2" />
+      <button id="loginBtn" class="ml-2 px-3 py-2 rounded bg-gradient-to-r from-purple-600 to-purple-400">Send link</button>
+      <div id="loginStatus" class="mt-2 text-sm text-gray-400"></div>
+    </section>
+
+    <section id="waitlistSection" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg">Waitlist entries</h2>
+        <div>
+          <button id="refreshBtn" class="px-3 py-2 mr-2 rounded bg-gray-800">Refresh</button>
+          <button id="exportBtn" class="px-3 py-2 rounded bg-gradient-to-r from-purple-600 to-purple-400">Export CSV</button>
+          <button id="signoutBtn" class="px-3 py-2 rounded ml-2 bg-red-700">Sign out</button>
+        </div>
+      </div>
+      <div id="waitlistTable" class="bg-gray-800 rounded p-4 text-sm"></div>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://gtzzqljpvbzociinqegh.supabase.co';
+    const SUPABASE_ANON_KEY_PLACEHOLDER = '__SUPABASE_ANON_KEY__';
+    const SUPABASE_ANON_KEY = window.__SUPABASE_ANON_KEY__ || SUPABASE_ANON_KEY_PLACEHOLDER;
+
+    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const loginEmail = document.getElementById('loginEmail');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginStatus = document.getElementById('loginStatus');
+    const waitlistSection = document.getElementById('waitlistSection');
+    const waitlistTable = document.getElementById('waitlistTable');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const signoutBtn = document.getElementById('signoutBtn');
+
+    async function sendMagicLink() {
+      const email = loginEmail.value;
+      if (!email) return loginStatus.textContent = 'Enter a valid email';
+      loginStatus.textContent = 'Sending...';
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) { loginStatus.textContent = 'Error: ' + error.message; } else { loginStatus.textContent = 'Magic link sent — check your inbox.'; }
+    }
+
+    loginBtn.addEventListener('click', sendMagicLink);
+
+    async function refreshWaitlist() {
+      waitlistTable.textContent = 'Loading...';
+      const { data, error } = await supabase.from('waitlist').select('*').order('created_at', { ascending: false });
+      if (error) { waitlistTable.textContent = 'Error loading: ' + error.message; return; }
+      if (!data || data.length === 0) { waitlistTable.textContent = 'No entries yet.'; return; }
+      const rows = data.map(row => `${dayjs(row.created_at).format('YYYY-MM-DD HH:mm')}\t${row.email}`).join('\n');
+      waitlistTable.textContent = 'Date\tEmail\n' + rows.replace(/\t/g, '\t');
+    }
+
+    refreshBtn.addEventListener('click', refreshWaitlist);
+    exportBtn.addEventListener('click', async () => {
+      const { data } = await supabase.from('waitlist').select('*').order('created_at', { ascending: false });
+      const csv = ['created_at,email', ...data.map(r => `${r.created_at},${r.email}`)].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      saveAs(blob, 'waitlist.csv');
+    });
+
+    signoutBtn.addEventListener('click', async () => { await supabase.auth.signOut(); location.reload(); });
+
+    // On auth state change
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session && session.user) {
+        document.getElementById('authArea').textContent = session.user.email;
+        document.getElementById('authSection').style.display = 'none';
+        waitlistSection.classList.remove('hidden');
+        refreshWaitlist();
+      } else {
+        document.getElementById('authArea').textContent = '';
+      }
+    });
+
+    // Check session on load
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        document.getElementById('authArea').textContent = session.user.email;
+        document.getElementById('authSection').style.display = 'none';
+        waitlistSection.classList.remove('hidden');
+        refreshWaitlist();
+      }
+    })();
+  </script>
+</body>
+</html>
